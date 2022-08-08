@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from './App/app.module'
+import { AppModule } from './app.module'
 import { setupCommons } from 'parkingspace-commons'
 
 async function bootstrap () {
