@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
-import { SpaceController } from './space.controller'
-import { SpaceService } from './space.service'
+import { SpaceController } from './spaces.controller'
+import { SpaceService } from './spaces.service'
 
 @Module({
   providers: [SpaceService],
