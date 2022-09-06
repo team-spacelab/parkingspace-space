@@ -26,6 +26,19 @@ export class SpaceController {
     }
   }
 
+  @Get('@me')
+  @UseGuards(ClientGuard)
+  public async getMySpaces (@Res({ passthrough: true }) res): Promise<ResponseBody<{ spaces: Spaces[] }>> {
+    const spaces = await this.spaceService.getMySpaces(res.locals.userId)
+
+    return {
+      success: true,
+      data: {
+        spaces
+      }
+    }
+  }
+
   @Get(':spaceId')
   public async getSpace (@Param('spaceId') spaceId: number): Promise<ResponseBody<{ space: Spaces }>> {
     const space = await this.spaceService.getSpace(spaceId)

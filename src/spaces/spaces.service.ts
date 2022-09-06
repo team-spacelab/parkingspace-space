@@ -46,6 +46,12 @@ export class SpaceService {
     return space
   }
 
+  public async getMySpaces (userId: number) {
+    const spaces = await this.spaces.findBy({ managerId: userId })
+
+    return spaces
+  }
+
   public async createSpace (userId: number, body: CreateSpaceDto) {
     const { generatedMaps } = await this.spaces.insert({
       ...body,
