@@ -1,10 +1,12 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Spaces, SpaceStatus, Zones, ZoneStatus } from 'parkingspace-commons'
+import { Utils } from 'src/utils'
 import { Between, Repository } from 'typeorm'
 import { CreateSpaceDto } from './dto/CreateSpace.dto'
 import { CreateZoneDto } from './dto/CreateZone.dto'
 import { QuerySpaceDto } from './dto/QuerySpace.dto'
+import { UpdateSpaceDto } from './dto/UpdateSpace.dto'
 
 @Injectable()
 export class SpaceService {
@@ -34,10 +36,56 @@ export class SpaceService {
     })
   }
 
+  public async getSpace (spaceId: number) {
+    const space = await this.spaces.findOneBy({ id: spaceId })
+
+    if (!space) {
+      throw new NotFoundException('SPACE_ID_NOT_FOUND')
+    }
+
+    return space
+  }
+
   public async createSpace (userId: number, body: CreateSpaceDto) {
     const { generatedMaps } = await this.spaces.insert({
       ...body,
       managerId: userId
+    })
+
+    return generatedMaps[0] as Spaces
+  }
+
+  public async updateSpace (userId: number, spaceId: number, body: UpdateSpaceDto) {
+    const space = await this.spaces.findOneBy({ id: spaceId })
+
+    if (!space) {
+      throw new NotFoundException('SPACE_ID_NOT_FOUND')
+    }
+
+    if (space.managerId !== userId) {
+      throw new ForbiddenException('SPACE_NOT_OWNED')
+    }
+
+    const { generatedMaps } = await this.spaces.update({ id: spaceId }, {
+      ...Utils.delUndef(body)
+    })
+
+    return generatedMaps[0] as Spaces
+  }
+
+  public async deleteSpace (userId: number, spaceId: number) {
+    const space = await this.spaces.findOneBy({ id: spaceId })
+
+    if (!space) {
+      throw new NotFoundException('SPACE_ID_NOT_FOUND')
+    }
+
+    if (space.managerId !== userId) {
+      throw new ForbiddenException('SPACE_NOT_OWNED')
+    }
+
+    const { generatedMaps } = await this.spaces.update({ id: spaceId }, {
+      status: SpaceStatus.DELETED
     })
 
     return generatedMaps[0] as Spaces

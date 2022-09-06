@@ -20,7 +20,7 @@ export class CreateSpaceDto {
   @IsNumber()
   @IsInt()
   @IsPositive()
-  public readonly cost: number
+  public readonly defaultCost: number
 
   @IsNumber()
   @IsPositive()
@@ -37,5 +37,5 @@ export class CreateSpaceDto {
   @IsPositive()
   @IsInt()
   @IsIn([10, 30, 60])
-  public readonly unit: number
+  public readonly timeUnit: number
 }
