@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { InjectRepository } from '@nestjs/typeorm'
 import { Spaces, SpaceStatus, Zones, ZoneStatus } from 'parkingspace-commons'
 import { Utils } from 'src/utils'
-import { Between, Repository } from 'typeorm'
+import { Between, Like, Repository } from 'typeorm'
 import { CreateSpaceDto } from './dto/CreateSpace.dto'
 import { CreateZoneDto } from './dto/CreateZone.dto'
 import { QuerySpaceDto } from './dto/QuerySpace.dto'
@@ -23,16 +23,18 @@ export class SpaceService {
   public querySpaceNearBy (body: QuerySpaceDto) {
     return this.spaces.find({
       where: {
-        lat: Between(body.lat - body.h / 2, body.lat + body.h / 2),
-        lng: Between(body.lng - body.w / 2, body.lng + body.w / 2),
+        ...(body.h !== undefined ? { lat: Between(body.lat - body.h / 2, body.lat + body.h / 2) } : {}),
+        ...(body.w !== undefined ? { lng: Between(body.lng - body.w / 2, body.lng + body.w / 2) } : {}),
         status: SpaceStatus.ENABLED,
         childrenZones: [{
           status: ZoneStatus.ENABLED
-        }]
+        }],
+        ...(body.search !== undefined ? { name: Like(`%${body.search}%`) } : {})
       },
       relations: {
         childrenZones: true
-      }
+      },
+      ...(body.search !== undefined ? { take: 5 } : {})
     })
   }
 

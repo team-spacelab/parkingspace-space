@@ -1,4 +1,4 @@
-import { IsNumber, IsPositive, Max, Min } from 'class-validator'
+import { IsNumber, IsOptional, IsPositive, IsString, Max, Min, MinLength } from 'class-validator'
 
 export class QuerySpaceDto {
   @IsNumber()
@@ -14,10 +14,17 @@ export class QuerySpaceDto {
   @IsNumber()
   @IsPositive()
   @Max(0.01)
-  public readonly w: number
+  @IsOptional()
+  public readonly w?: number
 
   @IsNumber()
   @IsPositive()
   @Max(0.01)
-  public readonly h: number
+  @IsOptional()
+  public readonly h?: number
+
+  @IsString()
+  @IsOptional()
+  @MinLength(2)
+  public readonly search?: string
 }
