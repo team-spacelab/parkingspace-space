@@ -13,7 +13,6 @@ export class UploadController {
   }
 
   @Get()
-  @UseGuards(ClientGuard)
   public async getSpaceFiles (@Param('spaceId') spaceId: number, @Query() body: QueryFilesDto, @Res({ passthrough: true }) res): Promise<ResponseBody<{files: SpaceFiles[] }>> {
     const files = await this.uploadService.getSpaceFiles(res.locals.userId, spaceId, body)
 
