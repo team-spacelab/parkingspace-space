@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Spaces, SpaceStatus, Zones, ZoneStatus } from 'parkingspace-commons'
+import { Spaces, SpaceStatus, SpaceType, Zones, ZoneStatus } from 'parkingspace-commons'
 import { Utils } from 'src/utils'
 import { Between, Like, Repository } from 'typeorm'
 import { CreateSpaceDto } from './dto/CreateSpace.dto'
@@ -57,6 +57,7 @@ export class SpaceService {
   public async createSpace (userId: number, body: CreateSpaceDto) {
     const { generatedMaps } = await this.spaces.insert({
       ...body,
+      type: SpaceType[body.type],
       managerId: userId
     })
 

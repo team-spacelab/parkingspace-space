@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, Res, UseGuards } from '@nestjs/common'
 import { ClientGuard, ResponseBody, SpaceFiles } from 'parkingspace-commons'
-import { CreateFileDto } from 'src/spaces/dto/CreateFile.dto'
-import { QueryFilesDto } from 'src/spaces/dto/QueryFiles.dto'
+import { CreateFileDto } from 'src/uploads/dto/CreateFile.dto'
+import { QueryFilesDto } from 'src/uploads/dto/QueryFiles.dto'
 import { UploadService } from './uploads.service'
 
 @Controller('spaces/:spaceId/files')

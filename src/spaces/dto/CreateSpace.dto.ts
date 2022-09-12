@@ -22,11 +22,9 @@ export class CreateSpaceDto {
   @IsPositive()
   public readonly defaultCost: number
 
-  @IsNumber()
-  @IsPositive()
-  @IsInt()
-  @IsIn([SpaceType.MANUALLY, SpaceType.AUTOMATICALLY])
-  public readonly type: SpaceType
+  @IsString()
+  @IsIn([SpaceType[SpaceType.MANUALLY], SpaceType[SpaceType.AUTOMATICALLY]])
+  public readonly type: keyof typeof SpaceType
 
   @IsString()
   @IsOptional()

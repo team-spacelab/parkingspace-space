@@ -4,8 +4,8 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { SpaceFiles, SpaceFileType, Spaces } from 'parkingspace-commons'
-import { CreateFileDto } from 'src/spaces/dto/CreateFile.dto'
-import { QueryFilesDto } from 'src/spaces/dto/QueryFiles.dto'
+import { CreateFileDto } from 'src/uploads/dto/CreateFile.dto'
+import { QueryFilesDto } from 'src/uploads/dto/QueryFiles.dto'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 
@@ -60,7 +60,7 @@ export class UploadService {
     await this.files.insert({
       uploaderId: userId,
       spaceId,
-      type: body.type,
+      type: SpaceFileType[body.type],
       url: '/' + key
     })
 
