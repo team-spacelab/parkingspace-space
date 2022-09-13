@@ -53,9 +53,7 @@ export class UploadService {
 
     const command = new PutObjectCommand({
       Bucket: this.configService.get<string>('S3_BUCKET_NAME'),
-      Key: key,
-      Body: 'BODY',
-      Expires: new Date(Date.now() + 10 * 60 * 1000)
+      Key: key
     })
 
     const { generatedMaps } = await this.files.insert({
@@ -69,7 +67,7 @@ export class UploadService {
       this.files.delete({ id: generatedMaps[0].id })
     }, 5 * 60 * 1000)
 
-    return await getSignedUrl(this.s3Client, command)
+    return await getSignedUrl(this.s3Client, command, { expiresIn: 600 })
   }
 
   public async deleteFile (userId: number, spaceId: number, fileId: number) {
