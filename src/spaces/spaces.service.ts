@@ -112,6 +112,8 @@ export class SpaceService {
     }
 
     const { generatedMaps } = await this.zones.insert({
+      spaceId,
+      managerId: userId,
       ...body
     })
 
