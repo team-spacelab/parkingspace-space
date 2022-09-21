@@ -39,7 +39,7 @@ export class SpaceService {
   }
 
   public async getSpace (spaceId: number) {
-    const space = await this.spaces.findOneBy({
+    const space = await this.spaces.findOne({
       where: {
         id: spaceId
       },
