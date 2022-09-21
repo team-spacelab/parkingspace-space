@@ -39,7 +39,14 @@ export class SpaceService {
   }
 
   public async getSpace (spaceId: number) {
-    const space = await this.spaces.findOneBy({ id: spaceId })
+    const space = await this.spaces.findOneBy({
+      where: {
+        id: spaceId
+      },
+      relations: {
+        childrenZones: true
+      }
+    })
 
     if (!space) {
       throw new NotFoundException('SPACE_ID_NOT_FOUND')
