@@ -56,7 +56,10 @@ export class SpaceService {
   }
 
   public async getMySpaces (userId: number) {
-    const spaces = await this.spaces.findBy({ managerId: userId })
+    const spaces = await this.spaces.findBy([
+      { managerId: userId, status: SpaceStatus.ENABLED },
+      { managerId: userId, status: SpaceStatus.PENDING_APPROVE }
+    ])
 
     return spaces
   }
