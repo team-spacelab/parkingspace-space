@@ -1,8 +1,9 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Spaces, SpaceStatus, SpaceType, Zones, ZoneStatus } from 'parkingspace-commons'
+import { Spaces, SpaceStatus, SpaceType, Zones, ZoneStatus, Reviews, Reserves } from 'parkingspace-commons'
 import { Utils } from 'src/utils'
-import { Between, Like, Repository } from 'typeorm'
+import { Between, IsNull, Like, Repository } from 'typeorm'
+import { CreateReviewDto } from './dto/createReview.dto'
 import { CreateSpaceDto } from './dto/CreateSpace.dto'
 import { CreateZoneDto } from './dto/CreateZone.dto'
 import { QuerySpaceDto } from './dto/QuerySpace.dto'
@@ -12,12 +13,18 @@ import { UpdateSpaceDto } from './dto/UpdateSpace.dto'
 export class SpaceService {
   private readonly spaces: Repository<Spaces>
   private readonly zones: Repository<Zones>
+  private readonly reviews: Repository<Reviews>
+  private readonly reserves: Repository<Reserves>
 
   constructor (
     @InjectRepository(Spaces) spaces: Repository<Spaces>,
-    @InjectRepository(Zones) zones: Repository<Zones>) {
+    @InjectRepository(Zones) zones: Repository<Zones>,
+    @InjectRepository(Reviews) reviews: Repository<Reviews>,
+    @InjectRepository(Reserves) reserves: Repository<Reserves>) {
     this.spaces = spaces
     this.zones = zones
+    this.reviews = reviews
+    this.reserves = reserves
   }
 
   public querySpaceNearBy (body: QuerySpaceDto) {
@@ -52,7 +59,14 @@ export class SpaceService {
       throw new NotFoundException('SPACE_ID_NOT_FOUND')
     }
 
-    return space
+    const avgRating = await this.reviews
+      .createQueryBuilder('reviews')
+      .select('AVG(reviews.rating)', 'avgRating')
+      .where('reviews.spaceId = :spaceId', { spaceId })
+      .andWhere('reviews.deletedAt IS NULL')
+      .getRawOne()
+
+    return { ...space, ...avgRating }
   }
 
   public async getMySpaces (userId: number) {
@@ -128,5 +142,52 @@ export class SpaceService {
     })
 
     return generatedMaps[0] as Zones
+  }
+
+  public async getReviews (spaceId: number) {
+    const reviews = await this.reviews.find({ where: { spaceId, deletedAt: IsNull() } })
+    return reviews
+  }
+
+  public async createReview (userId: number, spaceId: number, body: CreateReviewDto) {
+    const space = await this.spaces.findOne({ where: { id: spaceId }, relations: { childrenZones: true } })
+    if (!space) {
+      throw new NotFoundException('SPACE_ID_NOT_FOUND')
+    }
+
+    const reserve = await this.reserves.findOne({ where: { userId, zoneId: space.childrenZones[0].id } })
+    if (!reserve) {
+      throw new ForbiddenException('RESERVE_NOT_FOUND')
+    }
+
+    const review = await this.reviews.findOne({ where: { userId, spaceId, deletedAt: IsNull() } })
+    if (review) {
+      throw new ForbiddenException('REVIEW_ALREADY_EXIST')
+    }
+
+    const { generatedMaps } = await this.reviews.insert({
+      spaceId,
+      userId,
+      ...body
+    })
+
+    return generatedMaps[0] as Reviews
+  }
+
+  public async deleteReview (userId: number, spaceId: number, reviewId: number) {
+    const review = await this.reviews.findOneBy({ id: reviewId, spaceId })
+    if (!review) {
+      throw new NotFoundException('REVIEW_ID_NOT_FOUND')
+    }
+
+    if (review.userId !== userId) {
+      throw new ForbiddenException('REVIEW_NOT_OWNED')
+    }
+
+    const { generatedMaps } = await this.reviews.update({ id: reviewId }, {
+      deletedAt: new Date()
+    })
+
+    return generatedMaps[0] as Reviews
   }
 }

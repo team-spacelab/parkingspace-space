@@ -47,7 +47,7 @@ dependencies:
   class-transformer: 0.5.1
   class-validator: 0.13.2
   mysql2: 2.3.3
-  parkingspace-commons: github.com/team-spacelab/parkingspace-commons/6e1b3ac0425eb7d428994ddd4dd47230d48bcfdf_smfbgufrmj2fd6d32wpoj66svu
+  parkingspace-commons: github.com/team-spacelab/parkingspace-commons/7b59b8d554b6428378867b8ac2d26253a3ac5c7a_smfbgufrmj2fd6d32wpoj66svu
   reflect-metadata: 0.1.13
   rxjs: 7.5.6
   typeorm: 0.3.7_pa4ea3wjef6s4gsskhbyci3cte
@@ -2031,7 +2031,7 @@ packages:
     dev: true
 
   /buffer-equal-constant-time/1.0.1:
-    resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==}
+    resolution: {integrity: sha1-+OcRMvf/5uAaXJaXpMbz5I1cyBk=}
     dev: false
 
   /buffer-from/1.1.2:
@@ -2268,7 +2268,7 @@ packages:
     dev: false
 
   /cookie-signature/1.0.6:
-    resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
+    resolution: {integrity: sha1-4wOogrNCzD7oylE6eZmXNNqzriw=}
     dev: false
 
   /cookie/0.4.1:
@@ -5108,9 +5108,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/team-spacelab/parkingspace-commons/6e1b3ac0425eb7d428994ddd4dd47230d48bcfdf_smfbgufrmj2fd6d32wpoj66svu:
-    resolution: {tarball: https://codeload.github.com/team-spacelab/parkingspace-commons/tar.gz/6e1b3ac0425eb7d428994ddd4dd47230d48bcfdf}
-    id: github.com/team-spacelab/parkingspace-commons/6e1b3ac0425eb7d428994ddd4dd47230d48bcfdf
+  github.com/team-spacelab/parkingspace-commons/7b59b8d554b6428378867b8ac2d26253a3ac5c7a_smfbgufrmj2fd6d32wpoj66svu:
+    resolution: {tarball: https://codeload.github.com/team-spacelab/parkingspace-commons/tar.gz/7b59b8d554b6428378867b8ac2d26253a3ac5c7a}
+    id: github.com/team-spacelab/parkingspace-commons/7b59b8d554b6428378867b8ac2d26253a3ac5c7a
     name: parkingspace-commons
     version: 0.0.0
     peerDependencies:

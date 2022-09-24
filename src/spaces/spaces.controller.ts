@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res, UseGuards } from '@nestjs/common'
-import { ClientGuard, ResponseBody, Spaces, Zones } from 'parkingspace-commons'
+import { ClientGuard, ResponseBody, Reviews, Spaces, Zones } from 'parkingspace-commons'
+import { CreateReviewDto } from './dto/createReview.dto'
 import { CreateSpaceDto } from './dto/CreateSpace.dto'
 import { CreateZoneDto } from './dto/CreateZone.dto'
 import { QuerySpaceDto } from './dto/QuerySpace.dto'
@@ -99,6 +100,44 @@ export class SpaceController {
       success: true,
       data: {
         zone
+      }
+    }
+  }
+
+  @Get(':spaceId/review')
+  public async getSpaceReviews (@Param('spaceId') spaceId: number): Promise<ResponseBody<{ reviews: Reviews[] }>> {
+    const reviews = await this.spaceService.getReviews(spaceId)
+
+    return {
+      success: true,
+      data: {
+        reviews
+      }
+    }
+  }
+
+  @Post(':spaceId/review')
+  @UseGuards(ClientGuard)
+  public async createSpaceReview (@Param('spaceId') spaceId: number, @Body() body: CreateReviewDto, @Res({ passthrough: true }) res): Promise<ResponseBody<{ review: Reviews }>> {
+    const review = await this.spaceService.createReview(res.locals.userId, spaceId, body)
+
+    return {
+      success: true,
+      data: {
+        review
+      }
+    }
+  }
+
+  @Delete(':spaceId/review/:reviewId')
+  @UseGuards(ClientGuard)
+  public async deleteSpaceReview (@Param('spaceId') spaceId: number, @Param('reviewId') reviewId: number, @Res({ passthrough: true }) res): Promise<ResponseBody<{ review: Reviews }>> {
+    const review = await this.spaceService.deleteReview(res.locals.userId, spaceId, reviewId)
+
+    return {
+      success: true,
+      data: {
+        review
       }
     }
   }
